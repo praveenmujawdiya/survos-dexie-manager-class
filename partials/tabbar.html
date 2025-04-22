@@ -1,0 +1,43 @@
+<template>
+    <div class="page">
+
+        <div id="tabbar" class="toolbar toolbar-bottom tabbar tabbar-labels">
+            <div class="toolbar-inner">
+                <a href="/pokemon/" class="tab-link" data-route-tab-id="tab-main">
+                    <span class="icons">
+                        <iconify-icon icon="ic:twotone-catching-pokemon" class="icon"></iconify-icon>
+                        <iconify-icon icon="ic:baseline-catching-pokemon" class="icon icon-active"></iconify-icon>
+                    </span>
+                    <span class="tabbar-label">Pokemon</span>
+                </a>
+                <a href="/saved/" class="tab-link" data-route-tab-id="tab-saved">
+                    <span class="icons">
+                        <iconify-icon icon="solar:heart-bold-duotone" class="icon"></iconify-icon>
+                        <iconify-icon icon="solar:heart-bold" class="icon icon-active"></iconify-icon>
+                    </span>
+                    <span class="tabbar-label">Saved</span>
+                </a>
+                <a href="/settings/" class="tab-link" data-route-tab-id="tab-settings">
+                    <span class="icons">
+                        <iconify-icon icon="solar:settings-bold-duotone" class="icon"></iconify-icon>
+                        <iconify-icon icon="solar:settings-bold" class="icon icon-active"></iconify-icon>
+                    </span>
+                    <span class="tabbar-label">Settings</span>
+                </a>
+            </div>
+        </div>
+
+        <div class="tabs tabs-routable">
+            <div id="tab-main" class="tab"></div>
+            <div id="tab-saved" class="tab"></div>
+            <div id="tab-settings" class="tab"></div>
+        </div>
+
+    </div>
+</template>
+
+<script>
+    export default function(props, {$, $el, $f7, $f7route, $f7router, $h, $on, $store, $theme, $update}) {
+        return $render;
+    }
+</script>

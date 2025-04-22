@@ -1,0 +1,74 @@
+{
+    "id": "com.survos.pokedex",
+    "name": "Pokédex",
+    "short_name": "Pokédex",
+    "description": "The Pokémon Encyclopedia",
+    "scope": "./",
+    "start_url": "./index.html",
+    "display": "standalone",
+    "orientation": "any",
+    "background_color": "#FFFFFF",
+    "theme_color": "#FFFFFF",
+    "icons": [
+        {
+            "src": "assets/custom/launch-icons/icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "assets/custom/launch-icons/icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any"
+        },
+        {
+            "src": "assets/custom/launch-icons/maskable-icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "assets/custom/launch-icons/maskable-icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "maskable"
+        },
+        {
+            "src": "assets/custom/launch-icons/monochrome-icon-192x192.png",
+            "sizes": "192x192",
+            "type": "image/png",
+            "purpose": "monochrome"
+        },
+        {
+            "src": "assets/custom/launch-icons/monochrome-icon-512x512.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "monochrome"
+        }
+    ],
+    "shortcuts": [
+        {
+            "name": "All Pokémon",
+            "url": "./",
+            "icons": [
+                {
+                    "src": "assets/custom/launch-icons/shortcut-icon-list.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                }
+            ]
+        },
+        {
+            "name": "Saved Pokémon",
+            "url": "./saved",
+            "icons": [
+                {
+                    "src": "assets/custom/launch-icons/shortcut-icon-favorite.png",
+                    "sizes": "192x192",
+                    "type": "image/png"
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,102 @@
+<template>
+    <div class="page">
+
+        <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner">
+                <div class="left">
+                    <a href="#" class="link back">
+                        <i class="icon icon-back"></i>
+                        <span class="if-not-md">Back</span>
+                    </a>
+                </div>
+                <div class="title">Settings</div>
+            </div>
+        </div>
+
+        <div class="page-content">
+
+            <div class="row justify-content-center">
+                <div class="col-100 medium-75 large-60 xlarge-50">
+
+                    <div class="block-title margin-vertical">Appearance</div>
+                    <div class="list inset margin-vertical">
+                        <ul>
+                            <li>
+                                <a href="#" class="item-link smart-select smart-select-init" data-open-in="popover" data-close-on-select="true">
+                                    <div class="item-content">
+                                        <select name="theme_mode" @change="${(event) => $f7.theming.setMode(event.target.value)}">
+                                            <option value="light" selected="${$f7.theming.getMode() === 'light'}">Light</option>
+                                            <option value="dark" selected="${$f7.theming.getMode() === 'dark'}">Dark</option>
+                                            <option value="system" selected="${$f7.theming.getMode() === 'system'}">System</option>
+                                        </select>
+                                        <div class="item-media">
+                                            <div class="item-media">
+                                                ${$store.getters.themeMode.value === 'light' && $h`
+                                                <span class="flexbox-centered mask mask-squircle size-40 bg-color-yellow">
+                                                    <iconify-icon icon="material-symbols:light-mode" class="icon color-white"></iconify-icon>
+                                                </span>
+                                                `}
+                                                ${$store.getters.themeMode.value === 'dark' && $h`
+                                                <span class="flexbox-centered mask mask-squircle size-40 bg-color-mono">
+                                                    <iconify-icon icon="material-symbols:dark-mode" class="icon color-mono-invert"></iconify-icon>
+                                                </span>
+                                                `}
+                                                ${$store.getters.themeMode.value === 'system' && $h`
+                                                <span class="flexbox-centered mask mask-squircle size-40 bg-color-gray">
+                                                    <iconify-icon icon="material-symbols:brightness-4" class="icon color-white"></iconify-icon>
+                                                </span>
+                                                `}
+                                            </div>
+                                        </div>
+                                        <div class="item-inner">
+                                            <div class="item-title">Mode</div>
+                                            <div class="item-after"></div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="item-link smart-select smart-select-init" data-open-in="popover" data-close-on-select="true">
+                                    <div class="item-content">
+                                        <select name="theme_tone" @change="${(event) => $f7.theming.setTone(event.target.value)}">
+                                            <option value="warm" selected="${$f7.theming.getTone() === 'warm'}">Warm</option>
+                                            <option value="cool" selected="${$f7.theming.getTone() === 'cool'}">Cool</option>
+                                        </select>
+                                        <div class="item-media">
+                                            <div class="item-media">
+                                                ${$store.getters.themeTone.value === 'warm' && $h`
+                                                <span class="flexbox-centered mask mask-squircle size-40 bg-color-yellow">
+                                                    <iconify-icon icon="mdi:fire" class="icon color-white"></iconify-icon>
+                                                </span>
+                                                `}
+                                                ${$store.getters.themeTone.value === 'cool' && $h`
+                                                <span class="flexbox-centered mask mask-squircle size-40 bg-color-lightblue">
+                                                    <iconify-icon icon="mdi:snowflake-variant" class="icon color-white"></iconify-icon>
+                                                </span>
+                                                `}
+                                            </div>
+                                        </div>
+                                        <div class="item-inner">
+                                            <div class="item-title">Tone</div>
+                                            <div class="item-after"></div>
+                                        </div>
+                                    </div>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</template>
+
+<script>
+    export default function(props, {$, $el, $f7, $f7route, $f7router, $h, $on, $store, $theme, $update}) {
+        return $render;
+    }
+</script>

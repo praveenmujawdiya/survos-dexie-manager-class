@@ -1,0 +1,33 @@
+<template>
+    <div class="page no-navbar no-sidebar no-tabbar" style="--f7-page-bg-color: var(--f7-surface-color);">
+
+        <div class="page-content">
+
+            <div class="empty-state">
+                <div class="empty-state-media">
+                    <iconify-icon icon="solar:ghost-bold" class="icon font-size-96 color-red"></iconify-icon>
+                </div>
+                <div class="empty-state-title">Oops!</div>
+                <div class="empty-state-text">The page you are looking for doesn't exist.</div>
+                <div class="empty-state-actions">
+                    <div class="row">
+                        <div class="col-100 medium-50 margin-top">
+                            <a href="/" class="empty-state-action button button-fill button-large button-round">Go Home</a>
+                        </div>
+                        <div class="col-100 medium-50 margin-top">
+                            <a href="#" class="empty-state-action back button button-fade button-large button-round">Go Back</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</template>
+
+<script>
+    export default function(props, {$, $el, $f7, $f7route, $f7router, $h, $on, $store, $theme, $update}) {
+        return $render;
+    }
+</script>

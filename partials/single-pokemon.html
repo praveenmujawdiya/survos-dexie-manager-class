@@ -1,0 +1,148 @@
+<template>
+    <div class="page">
+
+        <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner">
+                <div class="left">
+                    <a href="#" class="link back">
+                        <i class="icon icon-back"></i>
+                        <span class="if-not-md">Back</span>
+                    </a>
+                </div>
+                <div class="title">Single Pokémon</div>
+            </div>
+        </div>
+
+        <div class="page-content">
+
+            ${data.entry ? $h`
+            <div class="row justify-content-center">
+                <div class="col-100 medium-75 large-60 xlarge-50">
+                    <div class="block block-strong inset margin-vertical text-align-center">
+                        <img src="${data.entry.image}" height="128" alt="" />
+                        <div class="font-size-18 font-weight-900 margin-top text-muted">${'#' + data.entry.id}</div>
+                        <div class="font-size-22 font-weight-900 text-capitalize">${data.entry.name}</div>
+                    </div>
+                </div>
+            </div>
+            ` : $h` `}
+
+            ${flags.loadingEntry ? $h`
+            <div class="block margin-vertical text-align-center">
+                <div class="preloader" key="preloader"></div>
+            </div>
+            ` : $h` `}
+
+            ${flags.noEntryFound ? $h`
+            <div class="empty-state">
+                <div class="empty-state-media">
+                    <iconify-icon icon="ic:baseline-catching-pokemon" class="icon font-size-96 color-gray"></iconify-icon>
+                </div>
+                <div class="empty-state-title">No Pokémon Found</div>
+                <div class="empty-state-text">There is no data available at the moment.</div>
+                <div class="empty-state-actions">
+                    <button type="button" class="empty-state-action button button-fill button-round color-mono text-color-mono-invert" @click="${loadEntry}">Retry</button>
+                </div>
+            </div>
+            ` : $h` `}
+
+            ${flags.apiErrorEntry ? $h`
+            <div class="empty-state">
+                <div class="empty-state-media">
+                    <iconify-icon icon="material-symbols:error" class="icon font-size-96 color-red"></iconify-icon>
+                </div>
+                ${$f7.online ? $h`
+                <div class="empty-state-title">Oops!</div>
+                <div class="empty-state-text">${messages.apiError}</div>
+                ` : $h`
+                <div class="empty-state-title">No Internet Connection</div>
+                <div class="empty-state-text">Please make sure you are connected to the Internet.</div>
+                `}
+                <div class="empty-state-actions">
+                    <button type="button" class="empty-state-action button button-fill button-round color-mono text-color-mono-invert" @click="${loadEntry}">Retry</button>
+                </div>
+            </div>
+            ` : $h` `}
+
+        </div>
+
+    </div>
+</template>
+
+<script>
+    export default function(props, {$, $el, $f7, $f7route, $f7router, $h, $on, $store, $theme, $update}) {
+
+        let data = {
+            entry: null
+        }
+
+        let messages = {
+            apiError: null
+        }
+
+        let flags = {
+            apiErrorEntry: false,
+            entryLoaded: false,
+            loadingEntry: false,
+            noEntryFound: false
+        }
+
+        let generateRequestParameters = function() {
+            let parameters = {};
+            return parameters;
+        }
+
+        let generateResponseData = function(data) {
+            let entry = {};
+            entry.id = data.id;
+            entry.name = data.name;
+            entry.image = data?.details?.sprites?.other?.home?.front_shiny || data?.details?.sprites?.front_default;
+            return entry;
+        }
+
+        let loadEntry = function() {
+            flags.apiErrorEntry = false;
+            flags.entryLoaded = false;
+            flags.loadingEntry = true;
+            flags.noEntryFound = false;
+            data.entry = null;
+            messages.apiError = null;
+            $update();
+            let requestParameters = generateRequestParameters();
+            $f7.request({
+                url: $f7.config.pokedexApi.rest.rootUrl + '/pokemon/' + $f7route.params.pokemon_id,
+                method: 'GET',
+                data: requestParameters,
+                dataType: 'application/ld+json'
+            })
+            .then(function(response) {
+                if (response.data) {
+                    let jsonData = JSON.parse(response.data);
+                    flags.entryLoaded = true;
+                    flags.loadingEntry = false;
+                    let entry = generateResponseData(jsonData);
+                    data.entry = entry;
+                    $update();
+                }
+                else {
+                    flags.loadingEntry = false;
+                    flags.noEntryFound = true;
+                    $update();
+                }
+            })
+            .catch(function(response) {
+                flags.apiErrorEntry = true;
+                flags.loadingEntry = false;
+                messages.apiError = 'An error occured while fetching data.';
+                $update();
+            });
+        }
+
+        $on('pageBeforeIn', function() {
+            loadEntry();
+        });
+
+        return $render;
+    }
+</script>

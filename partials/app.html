@@ -1,0 +1,39 @@
+<template>
+    <div id="app">
+
+        <div id="view-main" class="view view-main safe-areas"></div>
+
+    </div>
+</template>
+
+<script>
+    export default function(props, {$, $el, $f7, $f7ready, $f7route, $f7router, $h, $on, $onMounted, $store, $theme, $update}) {
+
+        let initializeViews = function() {
+
+            $f7.views.create($el.value.find('#view-main'), {
+                name: 'main',
+                main: true,
+                url: '/',
+                initRouterOnTabShow: true,
+                browserHistory: $f7.device.native ? false : true,
+                browserHistoryRoot: $('base').attr('href').slice(0, -1),
+                browserHistorySeparator: '',
+                browserHistoryTabs: 'push',
+                preloadPreviousPage: false,
+                auroraSwipeBack: false,
+                iosSwipeBack: false,
+                mdSwipeBack: false,
+                animate: !$f7.device.ios,
+                masterDetailBreakpoint: 768
+            });
+
+        }
+
+        $f7ready(function() {
+            initializeViews();
+        });
+
+        return $render;
+    }
+</script>

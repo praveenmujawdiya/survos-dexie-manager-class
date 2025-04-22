@@ -1,0 +1,320 @@
+<template>
+    <div class="page">
+
+        <div class="navbar">
+            <div class="navbar-bg"></div>
+            <div class="navbar-inner">
+                <div class="left">
+                    <a href="#" class="link back">
+                        <i class="icon icon-back"></i>
+                        <span class="if-not-md">Back</span>
+                    </a>
+                </div>
+                <div class="title">All Pokémon</div>
+            </div>
+        </div>
+
+        <div class="page-content infinite-scroll-content ptr-content">
+
+            <div class="ptr-preloader" key="ptr-preloader">
+                <div class="preloader"></div>
+                <div class="ptr-arrow"></div>
+            </div>
+
+            ${data.entries && data.entries.length ? $h`
+            <div class="list cards-list inset margin-vertical-half no-chevron no-hairlines no-hairlines-between">
+                <ul class="row align-items-stretch">
+                    ${data.entries.map((item, index) => $h`
+                    <li id="${item.id}" class="col-100 small-50 xlarge-33">
+                        <a href="/pokemon/${item.id}/" class="item-link">
+                            <div class="item-content">
+                                <div class="item-media">
+                                    <div class="flexbox-centered mask mask-squircle size-64 bg-color-subtle-gray">
+                                        <img src="${item.image}" class="size-40" loading="lazy" alt="" />
+                                    </div>
+                                </div>
+                                <div class="item-inner">
+                                    <div class="item-title text-capitalize font-weight-600">${item.name}</div>
+                                </div>
+                            </div>
+                        </a>
+                    </li>
+                    `)}
+                </ul>
+            </div>
+
+            ${!flags.allEntriesLoaded ? $h`
+            ${widgets.infiniteScroll.enabled ? $h`
+            <div id="infinite-scroll-handler" class="block margin-vertical text-align-center">
+                ${flags.loadMoreEntriesError ? $h`
+                <button type="button" class="button button-fill button-round margin-horizontal-auto color-mono text-color-mono-invert" style="width: 144px;" @click="${loadMoreEntries}">Load More</button>
+                ` : $h`
+                <span class="preloader" key="preloader-infinite-scroll"></span>
+                `}
+            </div>
+            ` : $h` `}
+            ${!widgets.infiniteScroll.enabled ? $h`
+            <div id="load-more-handler" class="block margin-vertical text-align-center">
+                ${flags.loadingMoreEntries ? $h`
+                <span class="preloader" key="preloader-load-more"></span>
+                ` : $h`
+                <button type="button" class="button button-fill button-round margin-horizontal-auto color-mono text-color-mono-invert" style="width: 144px;" @click="${loadMoreEntries}">Load More</button>
+                `}
+            </div>
+            ` : $h` `}
+            ` : $h` `}
+            ` : $h` `}
+
+            ${flags.loadingInitialEntries ? $h`
+            <div class="list cards-list inset margin-vertical-half no-hairlines no-hairlines-between">
+                <ul class="row align-items-stretch">
+                    ${Array(12).fill().map((item, index) => $h`
+                    <li class="col-100 small-50 xlarge-33">
+                        <div class="item-content skeleton-effect-fade">
+                            <div class="item-media">
+                                <span class="mask mask-squircle size-64 skeleton-block"></span>
+                            </div>
+                            <div class="item-inner">
+                                <div class="item-title skeleton-text">Pokemon Name Here</div>
+                            </div>
+                        </div>
+                    </li>
+                    `)}
+                </ul>
+            </div>
+            ` : $h` `}
+
+            ${flags.noEntriesFound ? $h`
+            <div class="empty-state empty-state-strong inset margin-vertical">
+                <div class="empty-state-media">
+                    <iconify-icon icon="ic:baseline-catching-pokemon" class="icon font-size-96 color-gray"></iconify-icon>
+                </div>
+                <div class="empty-state-title">No Pokémon Found</div>
+                <div class="empty-state-text">There is no data available at the moment.</div>
+                <div class="empty-state-actions">
+                    <button type="button" class="empty-state-action button button-fill button-round color-mono text-color-mono-invert" @click="${loadInitialEntries}">Retry</button>
+                </div>
+            </div>
+            ` : $h` `}
+
+            ${flags.apiErrorEntries ? $h`
+            <div class="empty-state empty-state-strong inset margin-vertical">
+                <div class="empty-state-media">
+                    <iconify-icon icon="material-symbols:error" class="icon font-size-96 color-red"></iconify-icon>
+                </div>
+                ${$f7.online ? $h`
+                <div class="empty-state-title">Oops!</div>
+                <div class="empty-state-text">${messages.apiError}</div>
+                ` : $h`
+                <div class="empty-state-title">No Internet Connection</div>
+                <div class="empty-state-text">Please make sure you are connected to the Internet.</div>
+                `}
+                <div class="empty-state-actions">
+                    <button type="button" class="empty-state-action button button-fill button-round color-mono text-color-mono-invert" @click="${loadInitialEntries}">Retry</button>
+                </div>
+            </div>
+            ` : $h` `}
+
+        </div>
+
+    </div>
+</template>
+
+<script>
+    export default function(props, {$, $el, $f7, $f7route, $f7router, $h, $on, $store, $theme, $update}) {
+
+        let widgets = {
+            infiniteScroll: {
+                enabled: true
+            }
+        }
+
+        let data = {
+            entries: null
+        }
+
+        let messages = {
+            apiError: null
+        }
+
+        let flags = {
+            allowInfiniteScroll: false,
+            allEntriesLoaded: false,
+            apiErrorEntries: false,
+            initialEntriesLoaded: false,
+            loadingInitialEntries: false,
+            loadingMoreEntries: false,
+            loadMoreEntriesError: false,
+            noEntriesFound: false
+        }
+
+        let pagination = {
+            entriesPerPage: 25,
+            currentPage: 1
+        }
+
+        let generateRequestParameters = function() {
+            let parameters = {};
+            parameters.itemsPerPage = pagination.entriesPerPage;
+            parameters.page = pagination.currentPage;
+            return parameters;
+        }
+
+        let generateResponseData = function(data) {
+            let entries = [];
+            for (i=0; i<data.length; i++) {
+                let entry = {};
+                entry.id = data[i].id;
+                entry.name = data[i].name;
+                entry.image = data[i]?.details?.sprites?.other?.home?.front_shiny || data[i]?.details?.sprites?.front_default;
+                entries.push(entry);
+            }
+            return entries;
+        }
+
+        let loadInitialEntries = function() {
+            flags.allEntriesLoaded = false;
+            flags.apiErrorEntries = false;
+            flags.initialEntriesLoaded = false;
+            flags.loadingInitialEntries = true;
+            flags.loadingMoreEntries = false;
+            flags.loadMoreEntriesError = false;
+            flags.noEntriesFound = false;
+            pagination.currentPage = 1;
+            data.entries = null;
+            messages.apiError = null;
+            $update();
+            let requestParameters = generateRequestParameters();
+            $f7.request({
+                url: $f7.config.pokedexApi.rest.rootUrl + '/pokemon',
+                method: 'GET',
+                data: requestParameters,
+                dataType: 'application/ld+json'
+            })
+            .then(function(response) {
+                if (response.data) {
+                    let jsonData = JSON.parse(response.data);
+                    let itemsData = jsonData.member;
+                    flags.initialEntriesLoaded = true;
+                    flags.loadingInitialEntries = false;
+                    let entries = generateResponseData(itemsData);
+                    data.entries = entries;
+                    $update(function() {
+                        if (itemsData.length < pagination.entriesPerPage) {
+                            flags.allEntriesLoaded = true;
+                            $update();
+                        }
+                        else {
+                            if (widgets.infiniteScroll.enabled) {
+                                flags.allowInfiniteScroll = true;
+                                $update(function() {
+                                    initializeInfiniteScroll();
+                                });
+                            }
+                        }
+                    });
+                }
+                else {
+                    flags.loadingInitialEntries = false;
+                    flags.noEntriesFound = true;
+                    $update();
+                }
+            })
+            .catch(function(response) {
+                flags.apiErrorEntries = true;
+                flags.loadingInitialEntries = false;
+                messages.apiError = 'An error occured while fetching data.';
+                $update();
+            });
+        }
+
+        let loadMoreEntries = function() {
+            flags.loadingMoreEntries = true;
+            flags.loadMoreEntriesError = false;
+            pagination.currentPage = pagination.currentPage + 1;
+            $update();
+            let requestParameters = generateRequestParameters();
+            $f7.request({
+                url: $f7.config.pokedexApi.rest.rootUrl + '/pokemon',
+                method: 'GET',
+                data: requestParameters,
+                dataType: 'application/ld+json'
+            })
+            .then(function(response) {
+                if (response.data.length) {
+                    let jsonData = JSON.parse(response.data);
+                    let itemsData = jsonData.member;
+                    flags.loadingMoreEntries = false;
+                    entries = generateResponseData(itemsData);
+                    data.entries = data.entries.concat(entries);
+                    $update(function() {
+                        if (itemsData.length < pagination.entriesPerPage) {
+                            if (widgets.infiniteScroll.enabled) {
+                                $f7.infiniteScroll.destroy($el.value.find('.infinite-scroll-content'));
+                            }
+                            flags.allEntriesLoaded = true;
+                            $update();
+                            return;
+                        }
+                        if (widgets.infiniteScroll.enabled) {
+                            if ($f7.elementInViewport($el.value.find('#infinite-scroll-handler')[0])) {
+                                loadMoreEntries();
+                            }
+                            else {
+                                flags.allowInfiniteScroll = true;
+                                $update();
+                            }
+                        }
+                    });
+                }
+            })
+            .catch(function(response) {
+                flags.loadingMoreEntries = false;
+                flags.loadMoreEntriesError = true;
+                pagination.currentPage = pagination.currentPage - 1;
+                $update();
+            });
+        }
+
+        let initializeInfiniteScroll = function() {
+            $f7.infiniteScroll.create($el.value.find('.infinite-scroll-content'));
+            $el.value.find('.infinite-scroll-content').on('infinite', function() {
+                if (!flags.allowInfiniteScroll) {
+                    return;
+                }
+                flags.allowInfiniteScroll = false;
+                $update(function() {
+                    loadMoreEntries();
+                });
+            });
+            if ($f7.elementInViewport($el.value.find('#infinite-scroll-handler')[0])) {
+                flags.allowInfiniteScroll = false;
+                $update(function() {
+                    loadMoreEntries();
+                });
+            }
+        }
+
+        let initializePullToRefresh = function() {
+            let pullToRefresh = $f7.ptr.create($el.value.find('.ptr-content'));
+            pullToRefresh.on('refresh', function() {
+                app.utils.nextTick(function() {
+                    pullToRefresh.done();
+                    $f7router.refreshPage();
+                }, 1000);
+            });
+        }
+
+        $on('pageBeforeIn', function() {
+            loadInitialEntries();
+            initializePullToRefresh();
+        });
+
+        $on('tabInit', function() {
+            loadInitialEntries();
+            initializePullToRefresh();
+        });
+
+        return $render;
+    }
+</script>

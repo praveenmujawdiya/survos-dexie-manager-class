@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+
+<html lang="en" dir="ltr">
+
+    <head>
+
+        <base href="/survos/pokedex/web/www/" />
+
+        <meta charset="utf-8" />
+        <meta http-equiv="Content-Security-Policy" content="default-src 'self' blob: data: file: capacitor: cdvfile: content: filesystem: gap: *; script-src 'self' 'unsafe-eval' 'unsafe-inline' *; style-src 'self' 'unsafe-inline' *; connect-src *;" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
+
+        <meta name="mobile-web-app-capable" content="yes" />
+
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-title" content="Pokédex" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="format-detection" content="telephone=no" />
+
+        <meta name="color-scheme" content="light dark" />
+        <meta name="theme-color" content="#FFFFFF" media="(prefers-color-scheme: light)" />
+        <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
+
+        <link rel="icon" type="image/svg+xml" sizes="any" href="favicon-light.svg" media="(prefers-color-scheme: light)" />
+        <link rel="icon" type="image/svg+xml" sizes="any" href="favicon-dark.svg" media="(prefers-color-scheme: dark)" />
+        <link rel="icon" type="image/png" sizes="any" href="favicon.png" />
+        <link rel="icon" type="image/x-icon" sizes="32x32" href="favicon.ico" />
+
+        <link rel="apple-touch-icon" href="assets/custom/launch-icons/apple-touch-icon.png" />
+
+        <link rel="manifest" href="manifest.json" />
+
+        <link rel="stylesheet" href="assets/vendor/framework7/framework7-bundle.min.css" />
+
+        <link rel="stylesheet" href="assets/vendor/survos/colors.css" />
+        <link rel="stylesheet" href="assets/vendor/survos/survos.css" />
+
+        <title>Pokédex</title>
+
+        <script type="importmap">
+            {
+                "imports": {
+                    "dexie": "https://cdn.jsdelivr.net/npm/dexie@4.0.11/+esm",
+                    "dexie-manager": "./assets/vendor/survos/dexie-manager.js"
+                }
+            }
+        </script>
+
+    </head>
+
+    <body>
+
+        <div id="app"></div>
+
+        <script defer src="assets/vendor/framework7/framework7-bundle.min.js"></script>
+        <script defer src="assets/vendor/dexie/dexie.min.js"></script>
+        <script defer src="assets/vendor/iconify-icon/iconify-icon.min.js"></script>
+
+        <script defer src="assets/vendor/survos/survos.js"></script>
+
+        <script defer src="assets/custom/js/config.js"></script>
+        <script defer src="assets/custom/js/routes.js"></script>
+        <script defer src="assets/custom/js/store.js"></script>
+        <script defer src="assets/custom/js/init.js"></script>
+
+        <script>
+            window.addEventListener('DOMContentLoaded', function() {
+                app.init();
+            });
+        </script>
+
+    </body>
+
+</html>
